@@ -1,12 +1,21 @@
 package com.example.stoplight.controller;
 
-import com.examples.apifirst.api.UserApiDelegate;
+import com.example.stoplight.service.UserService;
+import com.examples.apifirst.api.UserApi;
 import com.examples.apifirst.model.User;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RestController;
 
-public class DemoController implements UserApiDelegate {
+@RestController
+public class DemoController implements UserApi {
+
+    @Autowired
+    private UserService userService;
+
     @Override
     public ResponseEntity<User> postUser(User user) {
-        return UserApiDelegate.super.postUser(user);
+        userService.saveUser(user);
+        return ResponseEntity.ok(user);
     }
 }
