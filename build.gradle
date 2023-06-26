@@ -17,8 +17,8 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'javax.validation:validation-api:2.0.1.Final'
-    implementation 'io.springfox:springfox-swagger2:2.9.2'
-    implementation 'org.openapitools:jackson-databind-nullable:0.2.1'
+    implementation 'io.springfox:springfox-swagger2:3.0.0'
+    implementation 'org.openapitools:jackson-databind-nullable:0.2.6'
     runtimeOnly 'com.h2database:h2'
     compileOnly 'org.projectlombok:lombok:1.18.26'
     annotationProcessor 'org.projectlombok:lombok:1.18.26'
@@ -27,8 +27,8 @@ dependencies {
 // OpenAPI generator settings
 openApiGenerate {
     generatorName = "spring"
-    inputSpec = "$rootDir/specs/spec.yaml".toString()
-    outputDir = "$buildDir/generated/openapi".toString()
+    inputSpec = "$rootDir/specs/spec.yaml"
+    outputDir = "$buildDir/generated/openapi"
     apiPackage = "com.examples.apifirst.api"
     modelPackage = "com.examples.apifirst.model"
     configOptions = [

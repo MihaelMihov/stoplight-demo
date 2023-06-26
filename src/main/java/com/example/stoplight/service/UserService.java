@@ -17,6 +17,7 @@ public class UserService {
     userDao.setFirstName(user.getFirstName());
     userDao.setLastName(user.getLastName());
     userDao.setEmailVerified(user.getEmailVerified());
+    userDao.setEmail(user.getEmail());
     userDaoRepository.save(userDao);
   }
 }
