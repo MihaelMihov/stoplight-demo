@@ -18,4 +18,5 @@ public class DemoController implements UserApi {
         userService.saveUser(user);
         return ResponseEntity.ok(user);
     }
+
 }

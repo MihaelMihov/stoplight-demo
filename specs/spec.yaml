@@ -3,10 +3,50 @@ x-stoplight:
   id: 1hvsobgpn2hzu
 info:
   title: spec
-  version: '1.0'
+  version: '2.5'
+  contact:
+    name: Support
+    url: 'https://openweathermap.org/api'
+    email: some_email@gmail.com
+  license:
+    url: 'https://creativecommons.org/licenses/by-sa/4.0/'
+    name: Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)
+  description: 'Get the current weather, daily forecast for 16 days, and a three-hour-interval forecast for 5 days for your city. Helpful stats, graphics, and this day in history charts are available for your reference. Interactive maps show precipitation, clouds, pressure, wind around your location stations. Data is available in JSON, XML, or HTML format.'
 servers:
-  - url: 'http://localhost:8080'
+  - url: 'https://api.openweathermap.org/data/2.5'
+    description: openWeatherApi
 paths:
+  /user:
+    post:
+      summary: Create New User
+      operationId: post-user
+      responses:
+        '200':
+          description: User Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+              examples:
+                New User Bob Fellow:
+                  value:
+                    id: 12
+                    firstName: Bob
+                    lastName: Fellow
+                    email: bob.fellow@gmail.com
+                    dateOfBirth: '1996-08-24'
+                    emailVerified: false
+                    createDate: '2020-11-18'
+        '400':
+          description: Missing Required Information
+        '409':
+          description: Email Already Taken
+      description: Create a new user.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
   '/users/{userId}':
     parameters:
       - schema:
@@ -17,7 +57,6 @@ paths:
         description: Id of an existing user.
     get:
       summary: Get User Info by User ID
-      tags: []
       responses:
         '200':
           description: User Found
@@ -91,42 +130,29 @@ paths:
                   lastName: Baker
                   dateOfBirth: '1985-10-02'
         description: Patch user properties to update.
-  /user:
-    post:
-      summary: Create New User
-      operationId: post-user
+  /weather:
+    get:
+      summary: Your GET endpoint
+      tags: []
       responses:
         '200':
-          description: User Created
+          description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
-              examples:
-                New User Bob Fellow:
-                  value:
-                    id: 12
-                    firstName: Bob
-                    lastName: Fellow
-                    email: bob.fellow@gmail.com
-                    dateOfBirth: '1996-08-24'
-                    emailVerified: false
-                    createDate: '2020-11-18'
-            application/xml:
-              schema:
-                type: object
-                properties: {}
-        '400':
-          description: Missing Required Information
-        '409':
-          description: Email Already Taken
-      description: Create a new user.
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/User'
-        description: Add new user
+                $ref: '#/components/schemas/WeatherResponse'
+      operationId: get-weather
+      parameters:
+        - schema:
+            type: string
+          in: query
+          name: zip
+          description: 'Search by zip code. Example: 95050,us. Please note that if the country is not specified, the search uses USA as a default.'
+        - schema:
+            type: string
+          in: query
+          name: units
+          description: 'When you do not use the units parameter, the format is standard by default.'
 components:
   schemas:
     User:
@@ -170,3 +196,124 @@ components:
         - email
         - emailVerified
       description: User
+    WeatherResponse:
+      type: object
+      properties:
+        coord:
+          type: object
+          properties:
+            lon:
+              type: number
+            lat:
+              type: number
+        weather:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+              main:
+                type: string
+              description:
+                type: string
+              icon:
+                type: string
+        base:
+          type: string
+        main:
+          type: object
+          properties:
+            temp:
+              type: number
+            feels_like:
+              type: number
+            temp_min:
+              type: integer
+            temp_max:
+              type: integer
+            pressure:
+              type: integer
+            humidity:
+              type: integer
+        visibility:
+          type: integer
+        wind:
+          type: object
+          properties:
+            speed:
+              type: number
+            deg:
+              type: integer
+        clouds:
+          type: object
+          properties:
+            all:
+              type: integer
+        dt:
+          type: integer
+        sys:
+          type: object
+          properties:
+            type:
+              type: integer
+            id:
+              type: integer
+            country:
+              type: string
+            sunrise:
+              type: integer
+            sunset:
+              type: integer
+        timezone:
+          type: integer
+        id:
+          type: integer
+        name:
+          type: string
+        cod:
+          type: integer
+      x-examples:
+        Example 1:
+          coord:
+            lon: -121.95
+            lat: 37.35
+          weather:
+            - id: 803
+              main: Clouds
+              description: broken clouds
+              icon: 04n
+          base: stations
+          main:
+            temp: 45.25
+            feels_like: 41.16
+            temp_min: 41
+            temp_max: 50
+            pressure: 1026
+            humidity: 75
+          visibility: 16093
+          wind:
+            speed: 2.57
+            deg: 36
+          clouds:
+            all: 75
+          dt: 1579415808
+          sys:
+            type: 1
+            id: 5845
+            country: US
+            sunrise: 1579360793
+            sunset: 1579396557
+          timezone: -28800
+          id: 0
+          name: Santa Clara
+          cod: 200
+      description: ''
+      title: ''
+  securitySchemes:
+    app_id:
+      name: appId
+      type: apiKey
+      in: query
+security:
+  - app_id: []
